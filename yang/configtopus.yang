@@ -1,6 +1,6 @@
 module configtopus {
     yang-version 1.1;
-    namespace "srlinux.dev/ndk/configtopus";
+    namespace "urn:srlinux:ndk:configtopus";
     prefix "srl-labs-configtopus";
 
     description
