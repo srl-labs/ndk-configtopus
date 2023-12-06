@@ -1,0 +1,16 @@
+name: "ndk-configtopus" # name of the go package
+arch: "amd64" # architecture you are using
+version: "0.0.0-dev" # version of this rpm package
+maintainer: "Roman Dodin <roman@dodin.dev>"
+description: "Configtopus NDK application" # description of a package
+vendor: "Nokia" # optional information about the creator of the package
+license: "Apache-2.0" # license of the package
+contents: # contents to add to the package
+  - src: "./build/configtopus" # local path of agent binary
+    dst: "/usr/local/bin/configtopus" # destination path of agent binary
+
+  - src: "./yang" # local path of agent's YANG directory
+    dst: "/opt/configtopus/yang" # destination path of agent YANG
+
+  - src: "./configtopus.yml" # local path of agent yml
+    dst: "/etc/opt/srlinux/appmgr/" # destination path of agent yml

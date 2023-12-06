@@ -1,0 +1,16 @@
+# configtopus agent configuration file
+# for a complete list of parameters go to
+# http://learn.srlinux.dev/ndk/guide/agent/#application-manager-and-application-configuration-file
+# --8<-- [start:snip]
+configtopus:
+  path: /usr/local/bin
+  launch-command: configtopus
+  version-command: configtopus --version
+  failure-action: wait=10
+  config-delivery-format: json
+  yang-modules:
+    names:
+      - configtopus
+    source-directories:
+      - /opt/configtopus/yang
+# --8<-- [start:end]

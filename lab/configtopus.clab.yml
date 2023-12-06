@@ -1,0 +1,16 @@
+name: configtopus
+prefix: ""
+
+topology:
+  nodes:
+    configtopus:
+      kind: nokia_srlinux
+      image: ghcr.io/nokia/srlinux:23.10.1
+      exec:
+        - touch /tmp/.ndk-dev-mode
+      binds:
+        - ../build:/tmp/build # mount app binary
+        - ../configtopus.yml:/tmp/configtopus.yml # agent config file to appmgr directory
+        - ../yang:/opt/configtopus/yang # yang modules
+        - ../logs/srl:/var/log/srlinux # expose srlinux logs
+        - ../logs/configtopus/:/var/log/configtopus # expose configtopus log file
