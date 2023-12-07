@@ -1,143 +1,146 @@
 module configtopus {
-    yang-version 1.1;
-    namespace "urn:srlinux:ndk:configtopus";
-    prefix "srl-labs-configtopus";
+  yang-version 1.1;
+  namespace "urn:srlinux:ndk:configtopus";
+  prefix srl-labs-configtopus;
 
+  description
+    "configtopus YANG module";
+
+  revision 2023-12-06 {
     description
-        "configtopus YANG module";
+      "initial release";
+  }
 
-    revision "2023-12-06" {
+  grouping configtopus-top {
+    description
+      "Top level grouping for configtopus";
+    container configtopus {
+      presence "presence container";
+      description
+        "Top level enclosing container for configtopus";
+      leaf action-leaf-node {
         description
-            "initial release";
-    }
-
-    grouping configtopus-top {
-        description "Top level grouping for configtopus";
-        container configtopus {
-            presence "presence container";
-            description "Top level enclosing container for configtopus";
-
-            leaf action-leaf-node {
-                description "leaf node";
-                type enumeration {
-                    enum enable {
-                        value 1;
-                    }
-                    enum disable {
-                        value 0;
-                    }
-                }
-            }
-
-            leaf-list leaf-list-node {
-                description "leaf-list node";
-                type string;
-            }
-
-            list list-node {
-                description "list node";
-                key name;
-                leaf name{
-                    type string;
-                }
-                leaf-list child-leaf-list {
-                    description "child leaf-list node";
-                    type string;
-                }
-                leaf state {
-                    type uint64;
-                    config false;
-                }
-            }
-
-            list list-with-container {
-                description "list node";
-                key value;
-                leaf value{
-                    type string;
-                }
-                leaf state {
-                    type uint64;
-                    config false;
-                }
-                container container-leaf {
-                    leaf leaf-uint{
-                        type uint64;
-                    }
-                }
-            }
-
-            list parent-list-node {
-                description "parent list node";
-                key name;
-                leaf name{
-                    type string;
-                }
-                list child-list {
-                    description "child list";
-                    key name;
-                    leaf name{
-                        type string;
-                    }
-                    leaf state {
-                        type uint64;
-                        config false;
-                    }
-                }
-            }
-
-            container container-with-leaf {
-                presence "container-with-leaf";
-                description
-                    "child container node with leaf substatements";
-                leaf leaf-decimal{
-                    type decimal64 {
-                    fraction-digits 2;
-                    }
-                }
-                leaf leaf-uint{
-                    type uint64;
-                }
-                container child-container-with-leaf {
-                    description
-                        "child container node";
-                    container child-container-with-leaf-list {
-                        description
-                            "child container node";
-                        leaf-list child-leaf-list {
-                            description "child leaf-list node";
-                            type string;
-                        }
-                    }
-                }
-            }
-            
-            container container-with-leaf-list {
-                leaf-list child-leaf-list {
-                    description "child leaf-list node";
-                    type string;
-                }
-            }
-
-            container container-with-list{
-                leaf leaf-uint{
-                    type uint64;
-                }
-                list child-list {
-                    description "child list node";
-                    key name;
-                    leaf name{
-                        type string;
-                    }
-                    leaf state {
-                        type uint64;
-                        config false;
-                    }
-                }
-            }
+          "leaf node";
+        type enumeration {
+          enum enable {
+            value 1;
+          }
+          enum disable {
+            value 0;
+          }
         }
+      }
+      leaf-list leaf-list-node {
+        description
+          "leaf-list node";
+        type string;
+      }
+      list list-node {
+        description
+          "list node";
+        key "name";
+        leaf name {
+          type string;
+        }
+        leaf-list child-leaf-list {
+          description
+            "child leaf-list node";
+          type string;
+        }
+        leaf state {
+          type uint64;
+          config false;
+        }
+      }
+      list list-with-container {
+        description
+          "list node";
+        key "value";
+        leaf value {
+          type string;
+        }
+        leaf state {
+          type uint64;
+          config false;
+        }
+        container container-leaf {
+          leaf leaf-uint {
+            type uint64;
+          }
+        }
+      }
+      list parent-list-node {
+        description
+          "parent list node";
+        key "name";
+        leaf name {
+          type string;
+        }
+        list child-list {
+          description
+            "child list";
+          key "name";
+          leaf name {
+            type string;
+          }
+          leaf state {
+            type uint64;
+            config false;
+          }
+        }
+      }
+      container container-with-leaf {
+        presence "container-with-leaf";
+        description
+          "child container node with leaf substatements";
+        leaf leaf-decimal {
+          type decimal64 {
+            fraction-digits 2;
+          }
+        }
+        leaf leaf-uint {
+          type uint64;
+        }
+        container child-container-with-leaf {
+          description
+            "child container node";
+          container child-container-with-leaf-list {
+            description
+              "child container node";
+            leaf-list child-leaf-list {
+              description
+                "child leaf-list node";
+              type string;
+            }
+          }
+        }
+      }
+      container container-with-leaf-list {
+        leaf-list child-leaf-list {
+          description
+            "child leaf-list node";
+          type string;
+        }
+      }
+      container container-with-list {
+        leaf leaf-uint {
+          type uint64;
+        }
+        list child-list {
+          description
+            "child list node";
+          key "name";
+          leaf name {
+            type string;
+          }
+          leaf state {
+            type uint64;
+            config false;
+          }
+        }
+      }
     }
-    
-    // data definition statements
-    uses configtopus-top;
+  }
+
+  uses configtopus-top;
 }

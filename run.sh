@@ -10,7 +10,14 @@ BINARY=$(pwd)/build/${APPNAME}
 LABDIR=./lab
 LABFILE=${APPNAME}.clab.yml
 
-PYANG_CMD="docker run --rm -v $(pwd):/yang ghcr.io/hellt/pyang pyang"
+GOFUMPT_CMD="docker run --rm -it -e GOFUMPT_SPLIT_LONG_LINES=on -v $(pwd):/work ghcr.io/hellt/gofumpt:0.3.1"
+GOFUMPT_FLAGS="-l -w ."
+
+GODOT_CMD="docker run --rm -it -v $(pwd):/work ghcr.io/hellt/godot:1.4.11"
+GODOT_FLAGS="-w ."
+
+PYANG_CMD="sudo docker run --rm -v $(pwd):/yang ghcr.io/hellt/pyang pyang"
+YGOT_CMD="sudo docker run --rm -v $(pwd):/ygot ghcr.io/hellt/ygot:v0.29.16 generator"
 
 
 LDFLAGS="-s -w -X main.version=dev -X main.commit=$(git rev-parse --short HEAD)"
@@ -34,11 +41,17 @@ function lint {
     lint-yaml
 }
 
-GOFUMPT_CMD="docker run --rm -it -e GOFUMPT_SPLIT_LONG_LINES=on -v $(pwd):/work ghcr.io/hellt/gofumpt:0.3.1"
-GOFUMPT_FLAGS="-l -w ."
+# format yang file with pyang
+# usage ./run.sh format-yang <path-to-yang-file>
+function format-yang {
+    YANGFILE=$(ls yang/*.yang)
+    YTMPF=$(mktemp /tmp/temp.XXXXXX.yang)
+    echo "formatting $YANGFILE"
+    ${PYANG_CMD} -f yang $YANGFILE > $YTMPF
+    cp $YTMPF $YANGFILE
+    rm $YTMPF
+}
 
-GODOT_CMD="docker run --rm -it -v $(pwd):/work ghcr.io/hellt/godot:1.4.11"
-GODOT_FLAGS="-w ."
 
 function gofumpt {
     ${GOFUMPT_CMD} ${GOFUMPT_FLAGS}
@@ -160,6 +173,19 @@ function reload-app_mgr {
 
 function conf-tree {
     ${PYANG_CMD} -f tree yang/*.yang
+}
+
+function gen-structs {
+    OUTDIR=./structs
+    mkdir -p structs
+    ${YGOT_CMD} -structs_split_files_count=1 \
+    -output_dir=${OUTDIR} \
+    -yangpresence \
+    -shorten_enum_leaf_names \
+    -package_name=configtopus \
+    -include_descriptions=true \
+    yang/*.yang
+
 }
 
 #################################
