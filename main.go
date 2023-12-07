@@ -1,8 +1,6 @@
 // Main package.
-// --8<-- [start:pkg-main]
-package main
 
-// --8<-- [end:pkg-main]
+package main
 
 import (
 	"context"
@@ -19,16 +17,13 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-// --8<-- [start:pkg-main-vars].
 var (
 	version = "0.0.0"
 	commit  = ""
 )
 
-// --8<-- [end:pkg-main-vars]
-
 // Main entry point for the application.
-// --8<-- [start:main].
+
 func main() {
 	versionFlag := flag.Bool("version", false, "print the version and exit")
 
@@ -41,24 +36,19 @@ func main() {
 
 	logger := setupLogger()
 
-	// --8<-- [start:metadata]
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	ctx = metadata.AppendToOutgoingContext(ctx, "agent_name", configtopus.AppName)
-	// --8<-- [end:metadata]
 
 	exitHandler(cancel)
 
-	// --8<-- [start:main-init-app]
 	app := configtopus.New(ctx, &logger)
 	app.Start(ctx)
-	// --8<-- [end:main-init-app]
+
 }
 
-// --8<-- [end:main]
-
 // ExitHandler cancels the main context when interrupt or term signals are sent.
-// --8<-- [start:exit-handler].
+
 func exitHandler(cancel context.CancelFunc) {
 	// handle CTRL-C signal
 	sig := make(chan os.Signal, 1)
@@ -70,10 +60,8 @@ func exitHandler(cancel context.CancelFunc) {
 	}()
 }
 
-// --8<-- [end:exit-handler]
-
 // setupLogger creates a logger instance.
-// --8<-- [start:setup-logger].
+
 func setupLogger() zerolog.Logger {
 	var writers []io.Writer
 
@@ -107,5 +95,3 @@ func setupLogger() zerolog.Logger {
 
 	return zerolog.New(mw).With().Timestamp().Logger()
 }
-
-// --8<-- [end:setup-logger]

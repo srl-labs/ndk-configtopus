@@ -7,13 +7,10 @@ import (
 	"github.com/nokia/srlinux-ndk-go/ndk"
 )
 
-// --8<-- [start:state-const].
 const greeterKeyPath = ".greeter"
 
-// --8<-- [end:state-const]
-
 // updateState updates the state of the application.
-// --8<-- [start:update-state].
+
 func (a *App) updateState(ctx context.Context) {
 	jsData, err := json.Marshal(a.configState)
 	if err != nil {
@@ -24,10 +21,8 @@ func (a *App) updateState(ctx context.Context) {
 	a.telemetryAddOrUpdate(ctx, greeterKeyPath, string(jsData))
 }
 
-// --8<-- [end:update-state].
-
 // telemetryAddOrUpdate updates the state of the application using provided path and data.
-// --8<-- [start:telemetry-add-or-update].
+
 func (a *App) telemetryAddOrUpdate(ctx context.Context, jsPath string, jsData string) {
 	a.logger.Info().Msgf("updating: %s: %s", jsPath, jsData)
 
@@ -49,5 +44,3 @@ func (a *App) telemetryAddOrUpdate(ctx context.Context, jsPath string, jsData st
 	a.logger.Info().Msgf("Telemetry add/update status: %s, error_string: %q",
 		r1.GetStatus().String(), r1.GetErrorStr())
 }
-
-// --8<-- [start:telemetry-add-or-update]

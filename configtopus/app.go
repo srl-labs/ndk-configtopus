@@ -1,7 +1,4 @@
-// --8<-- [start:pkg-greeter]
 package configtopus
-
-// --8<-- [end:pkg-greeter]
 
 import (
 	"context"
@@ -14,17 +11,14 @@ import (
 	"google.golang.org/grpc/metadata"
 )
 
-// --8<-- [start:pkg-greeter-const].
 const (
 	ndkSocket            = "unix:///opt/srlinux/var/run/sr_sdk_service_manager:50053"
 	grpcServerUnixSocket = "unix:///opt/srlinux/var/run/sr_gnmi_server"
 	AppName              = "configtopus"
 )
 
-// --8<-- [end:pkg-greeter-const]
-
 // App is the greeter application struct.
-// --8<-- [start:app-struct].
+
 type App struct {
 	Name  string
 	AppID uint32
@@ -45,11 +39,9 @@ type App struct {
 	TelemetryServiceClient    ndk.SdkMgrTelemetryServiceClient
 }
 
-// --8<-- [end:app-struct]
-
 // New creates a new App instance and connects to NDK socket.
 // It also creates the NDK service clients and registers the agent with NDK.
-// --8<-- [start:new-app].
+
 func New(ctx context.Context, logger *zerolog.Logger) *App {
 	// connect to NDK socket
 	conn, err := connect(ctx, ndkSocket)
@@ -59,15 +51,13 @@ func New(ctx context.Context, logger *zerolog.Logger) *App {
 			Msg("gRPC connect failed")
 	}
 
-	// --8<-- [start:create-ndk-clients]
 	sdkMgrClient := ndk.NewSdkMgrServiceClient(conn)
 	notifSvcClient := ndk.NewSdkNotificationServiceClient(conn)
 	telemetrySvcClient := ndk.NewSdkMgrTelemetryServiceClient(conn)
-	// --8<-- [end:create-ndk-clients]
 
 	// register agent
 	// http://learn.srlinux.dev/ndk/guide/dev/go/#register-the-agent-with-the-ndk-manager
-	// --8<-- [start:register-agent]
+
 	r, err := sdkMgrClient.AgentRegister(ctx, &ndk.AgentRegistrationRequest{})
 	if err != nil || r.Status != ndk.SdkMgrStatus_kSdkMgrSuccess {
 		logger.Fatal().
@@ -75,14 +65,12 @@ func New(ctx context.Context, logger *zerolog.Logger) *App {
 			Str("status", r.GetStatus().String()).
 			Msg("Agent registration failed")
 	}
-	// --8<-- [end:register-agent]
 
 	logger.Info().
 		Uint32("app-id", r.GetAppId()).
 		Str("name", AppName).
 		Msg("Application registered successfully!")
 
-	// --8<-- [start:return-app]
 	return &App{
 		Name:  AppName,
 		AppID: r.GetAppId(), //(1)!
@@ -98,13 +86,11 @@ func New(ctx context.Context, logger *zerolog.Logger) *App {
 		NotificationServiceClient: notifSvcClient,
 		TelemetryServiceClient:    telemetrySvcClient,
 	}
-	// --8<-- [end:return-app]
+
 }
 
-// --8<-- [end:new-app]
-
 // Start starts the application.
-// --8<-- [start:app-start].
+
 func (a *App) Start(ctx context.Context) {
 	go a.receiveConfigNotifications(ctx)
 
@@ -124,10 +110,8 @@ func (a *App) Start(ctx context.Context) {
 	}
 }
 
-// --8<-- [end:app-start]
-
 // stop exits the application gracefully.
-// --8<-- [start:app-stop].
+
 func (a *App) stop() {
 	a.logger.Info().Msg("Got a signal to exit, unregistering configtopus agent, bye!")
 
@@ -154,16 +138,12 @@ func (a *App) stop() {
 	a.logger.Info().Msg("Configtopus unregistered successfully!")
 }
 
-// --8<-- [end:app-stop]
-
 // connect attempts connecting to the NDK socket with backoff and retry.
 // https://learn.srlinux.dev/ndk/guide/dev/go/#establish-grpc-channel-with-ndk-manager-and-instantiate-an-ndk-client
-// --8<-- [start:connect].
+
 func connect(ctx context.Context, socket string) (*grpc.ClientConn, error) {
 	conn, err := grpc.Dial(ndkSocket,
 		grpc.WithTransportCredentials(insecure.NewCredentials()))
 
 	return conn, err
 }
-
-// --8<-- [end:connect]

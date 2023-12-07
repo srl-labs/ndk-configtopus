@@ -9,7 +9,7 @@ import (
 )
 
 // StartConfigNotificationStream starts a notification stream for Config service notifications.
-// --8<-- [start:start-cfg-notif-stream].
+
 func (a *App) StartConfigNotificationStream(ctx context.Context) chan *ndk.NotificationStreamResponse {
 	streamID := a.createNotificationStream(ctx)
 
@@ -26,12 +26,10 @@ func (a *App) StartConfigNotificationStream(ctx context.Context) chan *ndk.Notif
 	return streamChan
 }
 
-// --8<-- [end:start-cfg-notif-stream]
-
 // createNotificationStream creates a notification stream and returns the Stream ID.
 // Stream ID is used to register notifications for other services.
 // It retries with retryTimeout until it succeeds.
-// --8<-- [start:create-notif-stream].
+
 func (a *App) createNotificationStream(ctx context.Context) uint64 {
 	retry := time.NewTicker(a.retryTimeout)
 
@@ -54,11 +52,9 @@ func (a *App) createNotificationStream(ctx context.Context) uint64 {
 	}
 }
 
-// --8<-- [end:create-notif-stream]
-
 // startNotificationStream starts a notification stream for a given NotificationRegisterRequest
 // and sends the received notifications to the passed channel.
-// --8<-- [start:start-notif-stream].
+
 func (a *App) startNotificationStream(ctx context.Context,
 	streamID uint64,
 	subscType string,
@@ -98,11 +94,9 @@ func (a *App) startNotificationStream(ctx context.Context,
 	}
 }
 
-// --8<-- [end:start-notif-stream]
-
 // getNotificationStreamClient acquires the notification stream client that is used to receive
 // streamed notifications.
-// --8<-- [start:stream-client].
+
 func (a *App) getNotificationStreamClient(ctx context.Context, streamID uint64) ndk.SdkNotificationService_NotificationStreamClient {
 	retry := time.NewTicker(a.retryTimeout)
 
@@ -124,11 +118,9 @@ func (a *App) getNotificationStreamClient(ctx context.Context, streamID uint64) 
 	}
 }
 
-// --8<-- [end:stream-client]
-
 // addConfigSubscription adds a subscription for Config service notifications
 // to the allocated notification stream.
-// --8<-- [start:add-cfg-sub].
+
 func (a *App) addConfigSubscription(ctx context.Context, streamID uint64) {
 	// create notification register request for Config service
 	// using acquired stream ID
@@ -146,5 +138,3 @@ func (a *App) addConfigSubscription(ctx context.Context, streamID uint64) {
 			a.Name, notificationRegisterReq, err)
 	}
 }
-
-// --8<-- [end:add-cfg-sub]

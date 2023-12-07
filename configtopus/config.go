@@ -14,7 +14,7 @@ const (
 )
 
 // ConfigState holds the application configuration and state.
-// --8<-- [start:configstate-struct].
+
 type ConfigState struct {
 	// Name is the name to use in the greeting.
 	Name string `json:"name,omitempty"`
@@ -22,12 +22,10 @@ type ConfigState struct {
 	Greeting string `json:"greeting,omitempty"`
 }
 
-// --8<-- [end:configstate-struct]
-
 // receiveConfigNotifications receives a stream of configuration notifications
 // buffer them in the configuration buffer and populates ConfigState struct of the App
 // once the whole committed config is received.
-// --8<-- [start:rcv-cfg-notif].
+
 func (a *App) receiveConfigNotifications(ctx context.Context) {
 	configStream := a.StartConfigNotificationStream(ctx)
 
@@ -46,13 +44,11 @@ func (a *App) receiveConfigNotifications(ctx context.Context) {
 	}
 }
 
-// --8<-- [end:rcv-cfg-notif]
-
 // handleConfigtopusConfig handles configuration changes for greeter application.
-// --8<-- [start:handle-greeter-cfg].
+
 func (a *App) handleConfigtopusConfig(cfg *ndk.ConfigNotification) {
 	switch {
-	// --8<-- [start:delete-case].
+
 	case a.isEmptyObject(cfg.GetData().GetJson()):
 		m := sync.Mutex{}
 		m.Lock()
@@ -62,9 +58,7 @@ func (a *App) handleConfigtopusConfig(cfg *ndk.ConfigNotification) {
 		a.configState = &ConfigState{}
 
 		m.Unlock()
-	// --8<-- [end:delete-case].
 
-	// --8<-- [start:non-delete-case].
 	default:
 		a.logger.Info().Msgf("Handling create or update for .greeter config tree: %+v", cfg)
 
@@ -73,15 +67,13 @@ func (a *App) handleConfigtopusConfig(cfg *ndk.ConfigNotification) {
 			a.logger.Error().Msgf("failed to unmarshal path %q config %+v", ".greeter", cfg.GetData())
 			return
 		}
-		// --8<-- [end:non-delete-case].
+
 	}
 }
 
-// --8<-- [end:handle-greeter-cfg]
-
 // handleConfigNotifications buffers the configuration notifications received
 // from the config notification stream before commit end notification is received.
-// --8<-- [start:buffer-cfg-notif].
+
 func (a *App) handleConfigNotifications(
 	notifStreamResp *ndk.NotificationStreamResponse,
 ) {
@@ -114,10 +106,9 @@ func (a *App) handleConfigNotifications(
 	}
 }
 
-// --8<-- [end:buffer-cfg-notif]
 // processConfig processes the configuration received from the config notification stream
 // and retrieves the uptime from the system.
-// --8<-- [start:process-config].
+
 func (a *App) processConfig(ctx context.Context) {
 	if a.configState.Name == "" {
 		a.logger.Info().Msg("No name configured, deleting state")
@@ -126,13 +117,10 @@ func (a *App) processConfig(ctx context.Context) {
 		return
 	}
 
-	// --8<-- [start:greeting-msg].
 	a.configState.Greeting = "👋 Hi " + a.configState.Name +
 		", SR Linux was last booted at "
-	// --8<-- [end:greeting-msg].
-}
 
-// --8<-- [end:process-config].
+}
 
 type CommitSeq struct {
 	CommitSeq int `json:"commit_seq"`
