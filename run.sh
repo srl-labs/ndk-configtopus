@@ -10,11 +10,14 @@ BINARY=$(pwd)/build/${APPNAME}
 LABDIR=./lab
 LABFILE=${APPNAME}.clab.yml
 
-GOFUMPT_CMD="docker run --rm -it -e GOFUMPT_SPLIT_LONG_LINES=on -v $(pwd):/work ghcr.io/hellt/gofumpt:0.3.1"
+GOFUMPT_CMD="sudo docker run --rm -it -e GOFUMPT_SPLIT_LONG_LINES=on -v $(pwd):/work ghcr.io/hellt/gofumpt:0.3.1"
 GOFUMPT_FLAGS="-l -w ."
 
-GODOT_CMD="docker run --rm -it -v $(pwd):/work ghcr.io/hellt/godot:1.4.11"
+GODOT_CMD="sudo docker run --rm -it -v $(pwd):/work ghcr.io/hellt/godot:1.4.11"
 GODOT_FLAGS="-w ."
+
+GOIMPORTS_CMD="sudo docker run --rm -it -v $(pwd):/work -w /work ghcr.io/hellt/goimports:v0.16.0"
+GOIMPORTS_FLAGS="-w ."
 
 PYANG_CMD="sudo docker run --rm -v $(pwd):/yang ghcr.io/hellt/pyang pyang"
 YGOT_CMD="sudo docker run --rm -v $(pwd):/ygot ghcr.io/hellt/ygot:v0.29.16 generator"
@@ -61,7 +64,12 @@ function godot {
     ${GODOT_CMD} ${GODOT_FLAGS}
 }
 
+function goimports {
+    ${GOIMPORTS_CMD} ${GOIMPORTS_FLAGS}
+}
+
 function format {
+    goimports
     gofumpt
     godot
 }
@@ -176,16 +184,17 @@ function conf-tree {
 }
 
 function gen-structs {
-    OUTDIR=./structs
-    mkdir -p structs
+    OUTDIR=./${APPNAME}/config
+    mkdir -p ${OUTDIR}
     ${YGOT_CMD} -structs_split_files_count=1 \
     -output_dir=${OUTDIR} \
     -yangpresence \
     -shorten_enum_leaf_names \
-    -package_name=configtopus \
+    -package_name=config \
     -include_descriptions=true \
     yang/*.yang
 
+    format
 }
 
 #################################
