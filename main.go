@@ -12,17 +12,17 @@ import (
 	"syscall"
 
 	"github.com/rs/zerolog"
+	"github.com/srl-labs/bond"
 	"github.com/srl-labs/ndk-configtopus/configtopus"
-	"google.golang.org/grpc/metadata"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
+
+const appName = "configtopus"
 
 var (
 	version = "0.0.0"
 	commit  = ""
 )
-
-// Main entry point for the application.
 
 func main() {
 	versionFlag := flag.Bool("version", false, "print the version and exit")
@@ -38,17 +38,29 @@ func main() {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	ctx = metadata.AppendToOutgoingContext(ctx, "agent_name", configtopus.AppName)
 
 	exitHandler(cancel)
 
-	app := configtopus.New(ctx, &logger)
-	app.Start(ctx)
+	opts := []bond.Option{
+		bond.WithLogger(&logger),
+		bond.WithContext(ctx),
+	}
 
+	agent, err := bond.NewAgent(appName, opts...)
+	if err != nil {
+		logger.Fatal().Err(err).Msg("Failed to create agent")
+	}
+
+	err = agent.Start()
+	if err != nil {
+		logger.Fatal().Err(err).Msg("Failed to start agent")
+	}
+
+	app := configtopus.New(appName, &logger, agent)
+	app.Start(ctx)
 }
 
 // ExitHandler cancels the main context when interrupt or term signals are sent.
-
 func exitHandler(cancel context.CancelFunc) {
 	// handle CTRL-C signal
 	sig := make(chan os.Signal, 1)
@@ -61,7 +73,6 @@ func exitHandler(cancel context.CancelFunc) {
 }
 
 // setupLogger creates a logger instance.
-
 func setupLogger() zerolog.Logger {
 	var writers []io.Writer
 
