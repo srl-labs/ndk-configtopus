@@ -17,7 +17,10 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-const appName = "configtopus"
+const (
+	appName = "configtopus"
+	appRoot = "/" + appName
+)
 
 var (
 	version = "0.0.0"
@@ -44,6 +47,7 @@ func main() {
 	opts := []bond.Option{
 		bond.WithLogger(&logger),
 		bond.WithContext(ctx),
+		bond.WithAppRootPath(appRoot),
 	}
 
 	agent, err := bond.NewAgent(appName, opts...)
