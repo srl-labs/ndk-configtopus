@@ -19,6 +19,9 @@ GODOT_FLAGS="-w ."
 GOIMPORTS_CMD="sudo docker run --rm -it -v $(pwd):/work -w /work ghcr.io/hellt/goimports:v0.16.0"
 GOIMPORTS_FLAGS="-w ."
 
+GOLANGCI_CMD="sudo docker run -t --rm -v $(pwd):/app -w /app golangci/golangci-lint:v1.50.1 golangci-lint"
+GOLANGCI_FLAGS="run -v ./..."
+
 PYANG_CMD="sudo docker run --rm -v $(pwd):/yang ghcr.io/hellt/pyang pyang"
 YGOT_CMD="sudo docker run --rm -v $(pwd):/ygot ghcr.io/hellt/ygot:v0.29.16 generator"
 
@@ -72,6 +75,10 @@ function format {
     goimports
     gofumpt
     godot
+}
+
+function golangci-lint {
+    ${GOLANGCI_CMD} ${GOLANGCI_FLAGS}
 }
 
 function build-app {

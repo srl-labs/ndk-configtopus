@@ -1,4 +1,4 @@
-module configtopus {
+module app {
   yang-version 1.1;
   namespace "urn:srlinux:ndk:configtopus";
   prefix srl-labs-configtopus;
