@@ -98,7 +98,7 @@ func setupLogger() zerolog.Logger {
 
 	// A lumberjack logger with rotation settings.
 	fileLogger := &lumberjack.Logger{
-		Filename:   "/var/log/configtopus/configtopus.log",
+		Filename:   "/var/log/" + appName + "/" + appName + ".log",
 		MaxSize:    2, // megabytes
 		MaxBackups: 3,
 		MaxAge:     28, // days
@@ -108,5 +108,8 @@ func setupLogger() zerolog.Logger {
 
 	mw := io.MultiWriter(writers...)
 
-	return zerolog.New(mw).With().Timestamp().Logger()
+	return zerolog.New(mw).With().
+		Timestamp().
+		Caller().
+		Logger()
 }
