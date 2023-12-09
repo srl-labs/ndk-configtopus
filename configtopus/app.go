@@ -48,8 +48,6 @@ func (a *App) Start(ctx context.Context) {
 		case <-a.NDKAgent.ConfigReceivedCh:
 			a.logger.Info().Msg("Received full config")
 
-			a.logger.Info().Msgf("Logging config: %s", a.NDKAgent.Config)
-
 			a.loadConfig()
 
 			// a.updateState(ctx)

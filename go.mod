@@ -3,6 +3,7 @@ module github.com/srl-labs/ndk-configtopus
 go 1.20
 
 require (
+	github.com/davecgh/go-spew v1.1.1
 	github.com/openconfig/goyang v1.4.4
 	github.com/openconfig/ygot v0.29.16
 	github.com/rs/zerolog v1.31.0
