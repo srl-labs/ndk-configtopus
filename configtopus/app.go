@@ -5,6 +5,7 @@ import (
 
 	"github.com/rs/zerolog"
 	"github.com/srl-labs/bond"
+	"github.com/srl-labs/ndk-configtopus/configtopus/config"
 )
 
 const (
@@ -18,7 +19,7 @@ type App struct {
 	Name string
 
 	// configState holds the application configuration and state.
-	// configState *ConfigState
+	configState *config.App_Configtopus
 
 	NDKAgent *bond.Agent
 
@@ -32,7 +33,7 @@ func New(name string, logger *zerolog.Logger, agent *bond.Agent) *App {
 	return &App{
 		Name: name,
 
-		// configState: &ConfigState{},
+		configState: &config.App_Configtopus{},
 
 		logger: logger,
 
@@ -41,16 +42,15 @@ func New(name string, logger *zerolog.Logger, agent *bond.Agent) *App {
 }
 
 // Start starts the application.
-
 func (a *App) Start(ctx context.Context) {
-	// go a.receiveConfigNotifications(ctx)
-
 	for {
 		select {
 		case <-a.NDKAgent.ConfigReceivedCh:
 			a.logger.Info().Msg("Received full config")
 
-			// a.processConfig(ctx)
+			a.logger.Info().Msgf("Logging config: %s", a.NDKAgent.Config)
+
+			a.loadConfig()
 
 			// a.updateState(ctx)
 
