@@ -11,9 +11,11 @@ func (a *App) loadConfig() {
 	// retrieved via gNMI.Get.
 	a.configState = &config.App_Configtopus{}
 
-	err := config.Unmarshal(a.NDKAgent.Config, a.configState)
-	if err != nil {
-		a.logger.Error().Err(err).Msg("Failed to unmarshal config")
+	if a.NDKAgent.Config != nil {
+		err := config.Unmarshal(a.NDKAgent.Config, a.configState)
+		if err != nil {
+			a.logger.Error().Err(err).Msg("Failed to unmarshal config")
+		}
 	}
 
 	a.logger.Debug().Msgf("Loaded config: %s", spew.Sdump(a.configState))
