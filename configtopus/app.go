@@ -8,11 +8,6 @@ import (
 	"github.com/srl-labs/ndk-configtopus/configtopus/config"
 )
 
-const (
-	ndkSocket            = "unix:///opt/srlinux/var/run/sr_sdk_service_manager:50053"
-	grpcServerUnixSocket = "unix:///opt/srlinux/var/run/sr_gnmi_server"
-)
-
 // App is the greeter application struct.
 
 type App struct {
@@ -48,7 +43,7 @@ func (a *App) Start(ctx context.Context) {
 		case <-a.NDKAgent.ConfigReceivedCh:
 			a.logger.Info().Msg("Received full config")
 
-			a.loadConfig()
+			a.loadConfigAndSyncState()
 
 			// a.updateState(ctx)
 
