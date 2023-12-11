@@ -18,5 +18,10 @@ func (a *App) loadConfig() {
 		}
 	}
 
-	a.logger.Debug().Msgf("Loaded config: %s", spew.Sdump(a.configState))
+	a.logger.Debug().Msgf("ConfigState struct dump: %s", spew.Sdump(a.configState))
+}
+
+func (a *App) loadConfigAndSyncState() {
+	a.loadConfig()
+	a.syncState()
 }
